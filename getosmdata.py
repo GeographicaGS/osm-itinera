@@ -22,7 +22,10 @@
 import os
 import requests
 import subprocess
+import psycopg2
 from contextlib import closing
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
 
 PG_DATABASE = os.environ['PG_DATABASE']
 PG_USER = os.environ['PG_USER']
@@ -83,6 +86,45 @@ def getOsmDataset(osm_script, osm_url=OVERPASS_API, chunk_size=1024,
         # print("Error requesting osm data: {0}".format(err))
         raise GetOsmDataError("Error requesting osm data: {0}".format(err))
 
+def createPgDb(dbase=PG_DATABASE, dbuser=PG_USER, dbpassw=PG_PASSWORD, 
+    dbport=PG_PORT, dbhost=PG_HOST):
+    """
+    Create new PostGIS+PgRouting database
+
+    """
+    try:
+        conn = None
+        conn = psycopg2.connect(database="postgres", user="postgres",
+                password=None, host=dbhost, port=dbport)
+
+        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = conn.cursor()
+
+        cur.execute("DROP DATABASE IF EXISTS {0};".format(dbase))
+        print("Database {0} removed".format(dbase))
+        
+        cur.execute("DROP USER IF EXISTS {0};".format(dbuser))
+        cur.execute("CREATE USER {0} with password '{1}';".format(dbuser, dbpassw))
+        print("User {0} created".format(dbuser))
+
+        cur.execute("CREATE DATABASE {0} WITH OWNER {1};".format(dbase, dbuser))
+        cur.close()
+        conn.close()
+        print("Database {0} created".format(dbase))
+
+        conn = psycopg2.connect(database=dbase, user="postgres",
+                password=None, host=dbhost, port=dbport)
+        cur = conn.cursor()
+        cur.execute("CREATE EXTENSION postgis;")
+        cur.execute("CREATE EXTENSION pgrouting;")
+        print("Added PostGIS and PgRouting extensions to {0}".format(dbase))
+        conn.commit()
+        cur.close()
+        conn.close()
+
+    except Exception as err:
+            raise GetOsmDataError("Database creation error: {0}".format(err))
+
 def osmData2Pg(filepath=OSM_FILEPATH, dbase=PG_DATABASE, dbuser=PG_USER,
     dbpassw=PG_PASSWORD, dbport=PG_PORT, dbhost=PG_HOST):
     
@@ -137,7 +179,12 @@ def run():
             
             print("OSM file sucessfully created!")
             
+            print("Creating and preparing database...")
+            createPgDb()
+            
+            print("Importing OSM data to PgSQL...")
             osmData2Pg()
+            
             print("OSM to PGSQL sucessfully finshed!")
             
         else:
