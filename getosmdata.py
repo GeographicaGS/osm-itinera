@@ -32,7 +32,7 @@ PG_USER = os.environ['PG_USER']
 PG_PASSWORD = os.environ['PG_PASSWORD']
 PG_HOST = os.environ['PG_HOST']
 PG_PORT = os.environ['PG_PORT']
-OSM_FILEPATH = '/tmp/output_osm.osm'
+OSM_FILEPATH = '/tmp/output_data.osm'
 OVERPASS_API = 'http://overpass-api.de/api/interpreter'
 
 
@@ -153,6 +153,18 @@ def cmdCall(params):
     except Exception as err:
         print("Shell command error: {0}".format(err))
 
+def cleanOsmData(filepath=OSM_FILEPATH):
+    """
+    Remove osm data file
+    """
+    try:
+        if os.path.exists(filepath)
+            os.remove(filepath)
+            print("OSM file successfully removed from local folder...")
+
+    except Exception as err:
+        print("Error removing OSM downloaded file: {0}".format(err))
+
 def run():
     # bbox_coords = (
     #     37.3282387449,
@@ -184,6 +196,8 @@ def run():
             
             print("Importing OSM data to PgSQL...")
             osmData2Pg()
+            
+            cleanOsmData()
             
             print("OSM to PGSQL sucessfully finshed!")
             
