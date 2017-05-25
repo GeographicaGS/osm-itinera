@@ -1,4 +1,4 @@
-# Compilation of CGAL and PGRouting
+# Compilation of CGAL, PGRouting and OSM2pgrouting
 
 # Update and apt-get basic packages
 apt-get update \

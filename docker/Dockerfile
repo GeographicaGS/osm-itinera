@@ -18,7 +18,7 @@ ADD compile.sh $ROOTDIR/src/
 RUN chmod 777 src/compile.sh
 RUN src/compile.sh
 
-# Install Python dependencies
+# Install Python3 dependencies
 RUN apt-get update -y && apt-get install -y python3-pip
 RUN python3 -m pip install requests
 RUN python3 -m pip install psycopg2
