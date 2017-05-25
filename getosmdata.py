@@ -23,17 +23,10 @@ import os
 import requests
 import subprocess
 import psycopg2
+import const
 from contextlib import closing
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-
-PG_DATABASE = os.environ['PG_DATABASE']
-PG_USER = os.environ['PG_USER']
-PG_PASSWORD = os.environ['PG_PASSWORD']
-PG_HOST = os.environ['PG_HOST']
-PG_PORT = os.environ['PG_PORT']
-OSM_FILEPATH = '/tmp/output_data.osm'
-OVERPASS_API = 'http://overpass-api.de/api/interpreter'
 
 
 class GetOsmDataError(Exception):
@@ -63,8 +56,8 @@ def composeOsmScript(bbox_coords, timeout=1000):
         # print("Error composing osm script: {0}".format(err))
         raise GetOsmDataError("Error composing osm script: {0}".format(err))
 
-def getOsmDataset(osm_script, osm_url=OVERPASS_API, chunk_size=1024, 
-    filepath=OSM_FILEPATH):
+def getOsmDataset(osm_script, osm_url=const.OVERPASS_API, chunk_size=1024, 
+    filepath=const.OSM_FILEPATH):
     """
     Make request to get osm datafile
     and write to disk
@@ -86,8 +79,8 @@ def getOsmDataset(osm_script, osm_url=OVERPASS_API, chunk_size=1024,
         # print("Error requesting osm data: {0}".format(err))
         raise GetOsmDataError("Error requesting osm data: {0}".format(err))
 
-def createPgDb(dbase=PG_DATABASE, dbuser=PG_USER, dbpassw=PG_PASSWORD, 
-    dbport=PG_PORT, dbhost=PG_HOST):
+def createPgDb(dbase=const.PG_DATABASE, dbuser=const.PG_USER, dbpassw=const.PG_PASSWORD, 
+    dbport=const.PG_PORT, dbhost=const.PG_HOST):
     """
     Create new PostGIS+PgRouting database
 
@@ -125,8 +118,8 @@ def createPgDb(dbase=PG_DATABASE, dbuser=PG_USER, dbpassw=PG_PASSWORD,
     except Exception as err:
             raise GetOsmDataError("Database creation error: {0}".format(err))
 
-def osmData2Pg(filepath=OSM_FILEPATH, dbase=PG_DATABASE, dbuser=PG_USER,
-    dbpassw=PG_PASSWORD, dbport=PG_PORT, dbhost=PG_HOST):
+def osmData2Pg(filepath=const.OSM_FILEPATH, dbase=const.PG_DATABASE, dbuser=const.PG_USER,
+    dbpassw=const.PG_PASSWORD, dbport=const.PG_PORT, dbhost=const.PG_HOST):
     
     osm_cdm = ["osm2pgrouting", "--file", filepath, "--dbname", dbase, 
                 "--user", dbuser, "--password", dbpassw, "--port", dbport, 
@@ -153,7 +146,7 @@ def cmdCall(params):
     except Exception as err:
         print("Shell command error: {0}".format(err))
 
-def cleanOsmData(filepath=OSM_FILEPATH):
+def cleanOsmData(filepath=const.OSM_FILEPATH):
     """
     Remove osm data file
     """
