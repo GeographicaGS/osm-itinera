@@ -22,3 +22,5 @@ RUN src/compile.sh
 RUN apt-get update -y && apt-get install -y python3-pip
 RUN python3 -m pip install requests
 RUN python3 -m pip install psycopg2
+
+WORKDIR /usr/src/app/
