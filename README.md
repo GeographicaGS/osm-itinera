@@ -1,8 +1,8 @@
-
+# OSM Itinera
 
 ### Create data container for PgSQL
 ```
-$ docker create --name postgis_routing_data -v /data debian /bin/true
+$ docker create --name osm_itinera_data -v /data debian /bin/true
 ```
 
 ### Prepare your config file.
@@ -23,5 +23,5 @@ $ docker-compose build
 ### Get data from OSM and import to PgSQL
 ```
 $ docker-compose up -d
-$ docker-compose exec postgis python3 /usr/src/app/getosmdata.py
+$ docker-compose exec postgis python3 /usr/src/app/osm_itinera.py
 ```

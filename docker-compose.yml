@@ -2,7 +2,7 @@ postgis:
   build: docker/
   dockerfile: Dockerfile
   volumes_from:
-    - postgis_routing_data
+    - osm_itinera_data
   volumes:
     - ./:/usr/src/app
   ports:

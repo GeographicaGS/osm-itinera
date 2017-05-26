@@ -30,3 +30,18 @@ PG_HOST = os.environ['PG_HOST']
 PG_PORT = os.environ['PG_PORT']
 OSM_FILEPATH = '/tmp/output_data.osm'
 OVERPASS_API = 'http://overpass-api.de/api/interpreter'
+
+BBOX_DICT = {
+    'sevilla': (
+        37.3282387449,
+        -6.0597701657,
+        37.4438529953,
+        -5.88779199411,
+    ),
+    'sevilla_demo': (
+        37.3424966101,
+        -5.98360108474,
+        37.347384398,
+        -5.9750619501
+    )
+}
