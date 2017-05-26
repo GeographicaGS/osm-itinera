@@ -23,5 +23,5 @@ $ docker-compose build
 ### Get data from OSM and import to PgSQL
 ```
 $ docker-compose up -d
-$ docker-compose exec postgis python3 /usr/src/app/osm_itinera.py
+$ docker-compose exec postgis python3 itinera/osm_itinera.py
 ```
