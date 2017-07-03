@@ -44,7 +44,7 @@ class Logger:
         return logging.getLogger()
 
 class OsmItinera:
-    
+
     def __init__(self, bbox_coords, verbose=True):
         if not verbose:
             lg = Logger(level=logging.ERROR)
@@ -52,9 +52,9 @@ class OsmItinera:
             lg = Logger()
 
         self.__logger = lg.get()
-        
+
         self.__bbox_coords = bbox_coords
-        
+
     def composeOsmScript(self, timeout=1000):
         """
         Composing OpenStreetMap Overpass API script
@@ -70,16 +70,16 @@ class OsmItinera:
                     </union>
                     <print limit="" mode="meta" order="id"/>
                 </osm-script>"""
-            
+
             osm_cfg = (timeout,) + self.__bbox_coords
 
             return osm_script.format(*osm_cfg)
-            
+
         except Exception as err:
             self.__logger.error("Error composing osm script: {0}".format(err))
             raise GetOsmDataError("Error composing osm script: {0}".format(err))
 
-    def getOsmDataset(self, osm_script, osm_url=const.OVERPASS_API, chunk_size=1024, 
+    def getOsmDataset(self, osm_script, osm_url=const.OVERPASS_API, chunk_size=1024,
         filepath=const.OSM_FILEPATH):
         """
         Make request to get osm datafile
@@ -87,8 +87,8 @@ class OsmItinera:
         """
         try:
             headers = {'Content-Type': 'application/xml'}
-            
-            with closing(requests.post(url=osm_url, data=osm_script, 
+
+            with closing(requests.post(url=osm_url, data=osm_script,
                 headers=headers, stream=True)) as resp:
 
                 resp.raise_for_status()
@@ -102,7 +102,7 @@ class OsmItinera:
             self.__logger.error("Error requesting osm data: {0}".format(err))
             raise GetOsmDataError("Error requesting osm data: {0}".format(err))
 
-    def createPgDb(self, dbase=const.PG_DATABASE, dbuser=const.PG_USER, dbpassw=const.PG_PASSWORD, 
+    def createPgDb(self, dbase=const.PG_DATABASE, dbuser=const.PG_USER, dbpassw=const.PG_PASSWORD,
         dbport=const.PG_PORT, dbhost=const.PG_HOST):
         """
         Create new PostGIS+PgRouting database
@@ -118,7 +118,7 @@ class OsmItinera:
 
             cur.execute("DROP DATABASE IF EXISTS {0};".format(dbase))
             self.__logger.info("Database {0} removed".format(dbase))
-            
+
             cur.execute("DROP USER IF EXISTS {0};".format(dbuser))
             cur.execute("CREATE USER {0} with password '{1}';".format(dbuser, dbpassw))
             self.__logger.info("User {0} created".format(dbuser))
@@ -134,7 +134,7 @@ class OsmItinera:
             cur.execute("CREATE EXTENSION postgis;")
             cur.execute("CREATE EXTENSION pgrouting;")
             self.__logger.info("Added PostGIS and PgRouting extensions to {0}".format(dbase))
-            
+
             conn.commit()
             cur.close()
             conn.close()
@@ -145,11 +145,11 @@ class OsmItinera:
 
     def osmData2Pg(self, filepath=const.OSM_FILEPATH, dbase=const.PG_DATABASE, dbuser=const.PG_USER,
         dbpassw=const.PG_PASSWORD, dbport=const.PG_PORT, dbhost=const.PG_HOST):
-        
-        osm_cdm = ["osm2pgrouting", "--file", filepath, "--dbname", dbase, 
-                    "--user", dbuser, "--password", dbpassw, "--port", dbport, 
+
+        osm_cdm = ["osm2pgrouting", "--file", filepath, "--dbname", dbase,
+                    "--user", dbuser, "--password", dbpassw, "--port", dbport,
                     "--host", dbhost, "--clean"]
-        
+
         out, err = self.__cmdCall(osm_cdm)
         if err:
             self.__logger.error("OSM data to postgres Error: {0}".format(err))
@@ -184,28 +184,28 @@ class OsmItinera:
             self.__logger.error("Error removing OSM downloaded file: {0}".format(err))
 
     def run(self):
-        
+
         try:
             if isinstance(self.__bbox_coords, tuple) and len(self.__bbox_coords) == 4:
-                
+
                 self.__logger.info("Composing OSM script...")
                 osm_script = self.composeOsmScript()
-                
+
                 self.__logger.info("Downloading OSM data...")
                 osm_data = self.getOsmDataset(osm_script)
-                
+
                 self.__logger.info("OSM file sucessfully created!")
-                
+
                 self.__logger.info("Creating and preparing database...")
                 self.createPgDb()
-                
+
                 self.__logger.info("Importing OSM data to PgSQL...")
                 self.osmData2Pg()
-                
+
                 self.cleanOsmData()
-                
+
                 self.__logger.info("OSM to PGSQL sucessfully finshed!")
-                
+
             else:
                 self.__logger.error("BBOX data must be a tuple with 4 coords...")
 
@@ -214,8 +214,6 @@ class OsmItinera:
 
 
 if __name__ == '__main__':
-    
-    osmIt = OsmItinera(const.BBOX_DICT['sevilla_demo'])
+
+    osmIt = OsmItinera(const.BBOX_DICT['sevilla'])
     osmIt.run()
-
-
