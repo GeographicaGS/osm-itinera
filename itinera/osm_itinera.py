@@ -144,11 +144,11 @@ class OsmItinera:
             raise GetOsmDataError("Database creation error: {0}".format(err))
 
     def osmData2Pg(self, filepath=const.OSM_FILEPATH, dbase=const.PG_DATABASE, dbuser=const.PG_USER,
-        dbpassw=const.PG_PASSWORD, dbport=const.PG_PORT, dbhost=const.PG_HOST):
+        dbpassw=const.PG_PASSWORD, dbport=const.PG_PORT, dbhost=const.PG_HOST, dbshema="osm"):
 
         osm_cdm = ["osm2pgrouting", "--file", filepath, "--dbname", dbase,
                     "--user", dbuser, "--password", dbpassw, "--port", dbport,
-                    "--host", dbhost, "--clean"]
+                    "--host", dbhost, "--schema", dbshema, "--addnodes", "--clean"]
 
         out, err = self.__cmdCall(osm_cdm)
         if err:
