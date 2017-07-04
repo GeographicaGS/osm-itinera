@@ -133,6 +133,7 @@ class OsmItinera:
             cur = conn.cursor()
             cur.execute("CREATE EXTENSION postgis;")
             cur.execute("CREATE EXTENSION pgrouting;")
+            cur.execute("CREATE SCHEMA IF NOT EXISTS osm AUTHORIZATION {0};".format(dbuser))
             self.__logger.info("Added PostGIS and PgRouting extensions to {0}".format(dbase))
 
             conn.commit()
