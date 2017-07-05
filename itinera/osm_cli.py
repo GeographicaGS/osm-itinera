@@ -20,34 +20,35 @@
 #
 
 
-import os
+import argparse
+from osm_itinera import OsmItinera
+from const import BBOX_DICT
 
 
-PG_DATABASE = os.environ['PG_DATABASE']
-PG_USER = os.environ['PG_USER']
-PG_PASSWORD = os.environ['PG_PASSWORD']
-PG_HOST = os.environ['PG_HOST']
-PG_PORT = os.environ['PG_PORT']
-OSM_FILEPATH = '/tmp/output_data.osm'
-OVERPASS_API = 'http://overpass-api.de/api/interpreter'
+def main():
+    descr = "OSM itinera"
+    arg_parser = argparse.ArgumentParser(description=descr)
 
-BBOX_DICT = {
-    'sevilla': (
-        37.3282387449,
-        -6.0597701657,
-        37.4438529953,
-        -5.88779199411,
-    ),
-    'sevilla_demo': (
-        37.3424966101,
-        -5.98360108474,
-        37.347384398,
-        -5.9750619501
-    ),
-    'bcn_demo': (
-        41.3860722001,
-        2.10899098555,
-        41.4844881298,
-        2.2223547892
-    )
-}
+    arg_parser.add_argument('bbox_zone', type=str, help='Bounding box zone')
+    arg_parser.add_argument('--dbschema', type=str, help='New DB schema name')
+    arg_parser.add_argument('--dropdb', help='Drop DB', action="store_true")
+
+    args = arg_parser.parse_args()
+
+    bbox_zone = args.bbox_zone
+
+    osm_kargs = {}
+
+    bbox_zone = BBOX_DICT[bbox_zone]
+
+    if args.dbschema:
+        osm_kargs['dbschema'] = args.dbschema
+
+    if args.dropdb:
+        osm_kargs['dropdb'] = args.dropdb
+
+    osmIt = OsmItinera(bbox_zone)
+    osmIt.run(**osm_kargs)
+
+if __name__ == '__main__':
+    main()

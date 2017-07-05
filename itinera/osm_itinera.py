@@ -102,7 +102,7 @@ class OsmItinera:
             self.__logger.error("Error requesting osm data: {0}".format(err))
             raise GetOsmDataError("Error requesting osm data: {0}".format(err))
 
-    def createPgDb(self, dbase=const.PG_DATABASE, dbuser=const.PG_USER, dbpassw=const.PG_PASSWORD,
+    def createPgDb(self, dbschema, dbdrop, dbase=const.PG_DATABASE, dbuser=const.PG_USER, dbpassw=const.PG_PASSWORD,
         dbport=const.PG_PORT, dbhost=const.PG_HOST):
         """
         Create new PostGIS+PgRouting database
@@ -110,30 +110,31 @@ class OsmItinera:
         """
         try:
             conn = None
-            conn = psycopg2.connect(database="postgres", user="postgres",
-                    password=None, host=dbhost, port=dbport)
+            if dbdrop:
+                conn = psycopg2.connect(database="postgres", user="postgres",
+                        password=None, host=dbhost, port=dbport)
 
-            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-            cur = conn.cursor()
+                conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+                cur = conn.cursor()
 
-            cur.execute("DROP DATABASE IF EXISTS {0};".format(dbase))
-            self.__logger.info("Database {0} removed".format(dbase))
+                cur.execute("DROP DATABASE IF EXISTS {0};".format(dbase))
+                self.__logger.info("Database {0} removed".format(dbase))
 
-            cur.execute("DROP USER IF EXISTS {0};".format(dbuser))
-            cur.execute("CREATE USER {0} with password '{1}';".format(dbuser, dbpassw))
-            self.__logger.info("User {0} created".format(dbuser))
+                cur.execute("DROP USER IF EXISTS {0};".format(dbuser))
+                cur.execute("CREATE USER {0} with password '{1}';".format(dbuser, dbpassw))
+                self.__logger.info("User {0} created".format(dbuser))
 
-            cur.execute("CREATE DATABASE {0} WITH OWNER {1};".format(dbase, dbuser))
-            cur.close()
-            conn.close()
-            self.__logger.info("Database {0} created".format(dbase))
+                cur.execute("CREATE DATABASE {0} WITH OWNER {1};".format(dbase, dbuser))
+                cur.close()
+                conn.close()
+                self.__logger.info("Database {0} created".format(dbase))
 
             conn = psycopg2.connect(database=dbase, user="postgres",
                     password=None, host=dbhost, port=dbport)
             cur = conn.cursor()
-            cur.execute("CREATE EXTENSION postgis;")
-            cur.execute("CREATE EXTENSION pgrouting;")
-            cur.execute("CREATE SCHEMA IF NOT EXISTS osm AUTHORIZATION {0};".format(dbuser))
+            cur.execute("CREATE EXTENSION IF NOT EXISTS postgis;")
+            cur.execute("CREATE EXTENSION IF NOT EXISTS pgrouting;")
+            cur.execute("CREATE SCHEMA IF NOT EXISTS {0} AUTHORIZATION {1};".format(dbschema, dbuser))
             self.__logger.info("Added PostGIS and PgRouting extensions to {0}".format(dbase))
 
             conn.commit()
@@ -145,17 +146,17 @@ class OsmItinera:
             raise GetOsmDataError("Database creation error: {0}".format(err))
 
     def osmData2Pg(self, filepath=const.OSM_FILEPATH, dbase=const.PG_DATABASE, dbuser=const.PG_USER,
-        dbpassw=const.PG_PASSWORD, dbport=const.PG_PORT, dbhost=const.PG_HOST, dbshema="osm"):
+        dbpassw=const.PG_PASSWORD, dbport=const.PG_PORT, dbhost=const.PG_HOST, dbschema="osm"):
 
         osm_cdm = ["osm2pgrouting", "--file", filepath, "--dbname", dbase,
                     "--user", dbuser, "--password", dbpassw, "--port", dbport,
-                    "--host", dbhost, "--schema", dbshema, "--addnodes", "--clean"]
+                    "--host", dbhost, "--schema", dbschema, "--addnodes", "--clean"]
 
         out, err = self.__cmdCall(osm_cdm)
         if err:
-            self.__logger.error("OSM data to postgres Error: {0}".format(err))
+            self.__logger.error("OSM data to postgres message: {0}".format(err))
         else:
-            self.__logger.error("OSM data to postgres: successfully process! (File: {0})".format(filepath))
+            self.__logger.info("OSM data to postgres: successfully process! (File: {0})".format(filepath))
 
     def __cmdCall(self, params):
         """
@@ -184,7 +185,7 @@ class OsmItinera:
         except Exception as err:
             self.__logger.error("Error removing OSM downloaded file: {0}".format(err))
 
-    def run(self):
+    def run(self, dbschema="osm", dbdrop=False):
 
         try:
             if isinstance(self.__bbox_coords, tuple) and len(self.__bbox_coords) == 4:
@@ -198,10 +199,10 @@ class OsmItinera:
                 self.__logger.info("OSM file sucessfully created!")
 
                 self.__logger.info("Creating and preparing database...")
-                self.createPgDb()
+                self.createPgDb(dbschema, dbdrop)
 
                 self.__logger.info("Importing OSM data to PgSQL...")
-                self.osmData2Pg()
+                self.osmData2Pg(dbschema=dbschema)
 
                 self.cleanOsmData()
 
@@ -212,9 +213,3 @@ class OsmItinera:
 
         except Exception as err:
             self.__logger.error(err)
-
-
-if __name__ == '__main__':
-
-    osmIt = OsmItinera(const.BBOX_DICT['sevilla'])
-    osmIt.run()
