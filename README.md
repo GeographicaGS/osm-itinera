@@ -25,3 +25,20 @@ $ docker-compose build
 $ docker-compose up -d
 $ docker-compose exec postgis python3 itinera/osm_cli.py sevilla_demo --dbschema sevilla_test --dropdb
 ```
+
+### Usage help
+```                               
+usage: osm_cli.py [-h] [--dbschema DBSCHEMA] [--dropdb] [--wtype WTYPE]
+                  bbox_zone
+
+OSM itinera
+
+positional arguments:
+  bbox_zone            Bounding box zone
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --dbschema DBSCHEMA  New DB schema name
+  --dropdb             Drop DB
+  --wtype WTYPE        Ways type (default | car | bike)
+```
