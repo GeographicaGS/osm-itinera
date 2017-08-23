@@ -22,7 +22,7 @@
 
 import argparse
 from osm_itinera import OsmItinera
-from const import BBOX_DICT
+from const import BBOX_DICT, MAPCFG_DICT
 
 
 def main():
@@ -32,6 +32,7 @@ def main():
     arg_parser.add_argument('bbox_zone', type=str, help='Bounding box zone')
     arg_parser.add_argument('--dbschema', type=str, help='New DB schema name')
     arg_parser.add_argument('--dropdb', help='Drop DB', action="store_true")
+    arg_parser.add_argument('--wtype', type=str, help='Ways type (default | car | bike)')
 
     args = arg_parser.parse_args()
 
@@ -40,6 +41,9 @@ def main():
     osm_kargs = {}
 
     bbox_zone = BBOX_DICT[bbox_zone]
+
+    if args.wtype:
+        osm_kargs['mapconfig'] = MAPCFG_DICT[args.wtype]
 
     if args.dbschema:
         osm_kargs['dbschema'] = args.dbschema

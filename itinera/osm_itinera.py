@@ -145,11 +145,12 @@ class OsmItinera:
             self.__logger.error("Database creation error: {0}".format(err))
             raise GetOsmDataError("Database creation error: {0}".format(err))
 
-    def osmData2Pg(self, filepath=const.OSM_FILEPATH, dbase=const.PG_DATABASE, dbuser=const.PG_USER,
-        dbpassw=const.PG_PASSWORD, dbport=const.PG_PORT, dbhost=const.PG_HOST, dbschema="osm"):
+    def osmData2Pg(self, mapconfig, dbschema, filepath=const.OSM_FILEPATH,
+        dbase=const.PG_DATABASE, dbuser=const.PG_USER, dbpassw=const.PG_PASSWORD,
+        dbport=const.PG_PORT, dbhost=const.PG_HOST):
 
-        osm_cdm = ["osm2pgrouting", "--file", filepath, "--dbname", dbase,
-                    "--user", dbuser, "--password", dbpassw, "--port", dbport,
+        osm_cdm = ["osm2pgrouting", "--file", filepath, "--dbname", dbase, "--conf",
+                    mapconfig, "--user", dbuser, "--password", dbpassw, "--port", dbport,
                     "--host", dbhost, "--schema", dbschema, "--addnodes", "--clean"]
 
         out, err = self.__cmdCall(osm_cdm)
@@ -185,7 +186,7 @@ class OsmItinera:
         except Exception as err:
             self.__logger.error("Error removing OSM downloaded file: {0}".format(err))
 
-    def run(self, dbschema="osm", dbdrop=False):
+    def run(self, dbschema="osm", dbdrop=False, mapconfig=const.MAPCFG_DICT["default"]):
 
         try:
             if isinstance(self.__bbox_coords, tuple) and len(self.__bbox_coords) == 4:
@@ -202,7 +203,7 @@ class OsmItinera:
                 self.createPgDb(dbschema, dbdrop)
 
                 self.__logger.info("Importing OSM data to PgSQL...")
-                self.osmData2Pg(dbschema=dbschema)
+                self.osmData2Pg(mapconfig, dbschema)
 
                 self.cleanOsmData()
 

@@ -51,3 +51,11 @@ BBOX_DICT = {
         2.2223547892
     )
 }
+
+folder_path = os.path.dirname(__file__)
+
+MAPCFG_DICT = {
+    'default': os.path.join(folder_path, 'mapconfig/mapconfig.xml'),
+    'car': os.path.join(folder_path, 'mapconfig/mapconfig_car.xml'),
+    'bikes':os.path.join(folder_path, 'mapconfig/mapconfig_bikes.xml')
+}
