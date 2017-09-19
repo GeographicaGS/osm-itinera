@@ -31,6 +31,14 @@ PG_PORT = os.environ['PG_PORT']
 OSM_FILEPATH = '/tmp/output_data.osm'
 OVERPASS_API = 'http://overpass-api.de/api/interpreter'
 
+folder_path = os.path.dirname(__file__)
+
+MAPCFG_DICT = {
+    'default': os.path.join(folder_path, 'mapconfig/mapconfig.xml'),
+    'car': os.path.join(folder_path, 'mapconfig/mapconfig_car.xml'),
+    'bikes':os.path.join(folder_path, 'mapconfig/mapconfig_bikes.xml')
+}
+
 BBOX_DICT = {
     'sevilla': (
         37.3282387449,
@@ -49,13 +57,11 @@ BBOX_DICT = {
         2.10899098555,
         41.4844881298,
         2.2223547892
+    ),
+    'bcn': (
+        41.26684,
+        1.97180,
+        41.55818,
+        2.26478
     )
-}
-
-folder_path = os.path.dirname(__file__)
-
-MAPCFG_DICT = {
-    'default': os.path.join(folder_path, 'mapconfig/mapconfig.xml'),
-    'car': os.path.join(folder_path, 'mapconfig/mapconfig_car.xml'),
-    'bikes':os.path.join(folder_path, 'mapconfig/mapconfig_bikes.xml')
 }
