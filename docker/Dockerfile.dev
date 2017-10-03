@@ -4,14 +4,14 @@ MAINTAINER Cayetano Benavent "cayetano.benavent@geographica.gs"
 
 
 # Environment
-ENV PGROUTING_VERSION 2.5.0
+ENV PGROUTING_VERSION develop
 ENV CGAL_VERSION 4.9
-ENV OSM2PGR_VERSION 2.2.0
+ENV OSM2PGR_VERSION develop
 
 # Sources
 ADD https://github.com/pgRouting/pgrouting/archive/${PGROUTING_VERSION}.tar.gz $ROOTDIR/src/pgrouting/
 ADD https://github.com/CGAL/cgal/archive/releases/CGAL-${CGAL_VERSION}.tar.gz $ROOTDIR/src/cgal/
-ADD https://github.com/pgRouting/osm2pgrouting/archive/${OSM2PGR_VERSION}.tar.gz $ROOTDIR/src/pgRouting/
+ADD https://github.com/pgRouting/osm2pgrouting/archive/${OSM2PGR_VERSION}.tar.gz $ROOTDIR/src/osm2pgrouting/
 ADD compile.sh $ROOTDIR/src/
 
 # Compilation

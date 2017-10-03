@@ -134,6 +134,7 @@ class OsmItinera:
             cur = conn.cursor()
             cur.execute("CREATE EXTENSION IF NOT EXISTS postgis;")
             cur.execute("CREATE EXTENSION IF NOT EXISTS pgrouting;")
+            cur.execute("CREATE EXTENSION IF NOT EXISTS hstore;")
             cur.execute("CREATE SCHEMA IF NOT EXISTS {0} AUTHORIZATION {1};".format(dbschema, dbuser))
             self.__logger.info("Added PostGIS and PgRouting extensions to {0}".format(dbase))
 
@@ -151,7 +152,9 @@ class OsmItinera:
 
         osm_cdm = ["osm2pgrouting", "--file", filepath, "--dbname", dbase, "--conf",
                     mapconfig, "--user", dbuser, "--password", dbpassw, "--port", dbport,
-                    "--host", dbhost, "--schema", dbschema, "--addnodes", "--clean"]
+                    "--host", dbhost, "--schema", dbschema, "--addnodes", "--clean", "--addways",
+                    # "--tags", "--attributes", "--hstore", "--addways", "--addrelations"
+                    ]
 
         out, err = self.__cmdCall(osm_cdm)
         if err:

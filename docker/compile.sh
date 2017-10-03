@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Compilation of CGAL, PGRouting and OSM2pgrouting
 
 # Update and apt-get basic packages
@@ -10,13 +12,24 @@ apt-get update \
 	       libmpfr-dev \
          expat \
          libexpat1-dev \
-         libboost-program-options-dev
+         libboost-program-options-dev \
+         libpqxx-dev
 
 
 # Untar
-cd src ; tar -xvf CGAL-${CGAL_VERSION}.tar.gz ; cd ..
-cd src ; tar -xvf v${PGROUTING_VERSION}.tar.gz ; cd ..
-cd src ; tar -xvf v${OSM2PGR_VERSION}.tar.gz ; cd ..
+cd src ; tar -xvf cgal/CGAL-${CGAL_VERSION}.tar.gz ; cd ..
+
+if [[ $PGROUTING_VERSION != "develop" ]]; then
+  PGROUTING_PFX="v";
+fi;
+
+cd src ; tar -xvf pgrouting/${PGROUTING_PFX}${PGROUTING_VERSION}.tar.gz ; cd ..
+
+if [[ $OSM2PGR_VERSION != "develop" ]]; then
+  OSM2PGR_PFX="v";
+fi;
+
+cd src ; tar -xvf osm2pgrouting/${OSM2PGR_PFX}${OSM2PGR_VERSION}.tar.gz ; cd ..
 
 
 # Compilation of CGAL
@@ -27,7 +40,7 @@ cmake ..
 make
 make install
 ldconfig
-cd ../../..
+cd $ROOTDIR
 
 
 # Compilation of PGRouting
@@ -38,7 +51,7 @@ cmake ..
 make
 make install
 ldconfig
-cd ../../..
+cd $ROOTDIR
 
 
 # Compilation of osm2pgrouting
@@ -49,7 +62,7 @@ cmake .. -DBOOST_ROOT:PATH=/local/projects/rel-boost-1.58.0
 make
 make install
 ldconfig
-cd ../../..
+cd $ROOTDIR
 
 
 # Clean up
