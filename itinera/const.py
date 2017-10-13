@@ -23,11 +23,11 @@
 import os
 
 
-PG_DATABASE = os.environ['PG_DATABASE']
-PG_USER = os.environ['PG_USER']
-PG_PASSWORD = os.environ['PG_PASSWORD']
-PG_HOST = os.environ['PG_HOST']
-PG_PORT = os.environ['PG_PORT']
+PG_DATABASE = os.environ.get('PG_DATABASE', None)
+PG_USER = os.environ.get('PG_USER', None)
+PG_PASSWORD = os.environ.get('PG_PASSWORD', None)
+PG_HOST = os.environ.get('PG_HOST', None)
+PG_PORT = os.environ.get('PG_PORT', None)
 OSM_FILEPATH = '/tmp/output_data.osm'
 OVERPASS_API = 'http://overpass-api.de/api/interpreter'
 
@@ -36,7 +36,8 @@ folder_path = os.path.dirname(__file__)
 MAPCFG_DICT = {
     'default': os.path.join(folder_path, 'mapconfig/mapconfig.xml'),
     'car': os.path.join(folder_path, 'mapconfig/mapconfig_car.xml'),
-    'bikes':os.path.join(folder_path, 'mapconfig/mapconfig_bikes.xml')
+    'bikes':os.path.join(folder_path, 'mapconfig/mapconfig_bikes.xml'),
+    'pedestrian':os.path.join(folder_path, 'mapconfig/mapconfig_pedestrian.xml')
 }
 
 BBOX_DICT = {
