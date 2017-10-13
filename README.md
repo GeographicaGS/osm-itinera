@@ -40,5 +40,5 @@ optional arguments:
   -h, --help           show this help message and exit
   --dbschema DBSCHEMA  New DB schema name
   --dropdb             Drop DB
-  --wtype WTYPE        Ways type (default | car | bike)
+  --wtype WTYPE        Ways type (default | car | bike | pedestrian)
 ```

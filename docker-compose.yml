@@ -6,6 +6,6 @@ postgis:
   volumes:
     - ./:/usr/src/app
   ports:
-    - "5439:5432"
+    - "5438:5432"
   env_file:
     - ./config.env
