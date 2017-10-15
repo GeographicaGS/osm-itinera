@@ -6,7 +6,7 @@ MAINTAINER Cayetano Benavent "cayetano.benavent@geographica.gs"
 # Environment
 ENV PGROUTING_VERSION 2.5.0
 ENV CGAL_VERSION 4.9
-ENV OSM2PGR_VERSION 2.3.0
+ENV OSM2PGR_VERSION 2.3.1
 
 # Sources
 ADD https://github.com/pgRouting/pgrouting/archive/v${PGROUTING_VERSION}.tar.gz $ROOTDIR/src/
@@ -29,6 +29,5 @@ RUN apt-get update -y && apt-get install -y expat \
 # Compilation
 RUN chmod 777 src/compile.sh
 RUN src/compile.sh
-
 
 WORKDIR /usr/src/app/

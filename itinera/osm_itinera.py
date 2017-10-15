@@ -150,9 +150,12 @@ class OsmItinera:
         dbase=const.PG_DATABASE, dbuser=const.PG_USER, dbpassw=const.PG_PASSWORD,
         dbport=const.PG_PORT, dbhost=const.PG_HOST):
 
-        osm_cdm = ["osm2pgrouting", "--file", filepath, "--dbname", dbase, "--conf",
-                    mapconfig, "--user", dbuser, "--password", dbpassw, "--port", dbport,
-                    "--host", dbhost, "--schema", dbschema, "--clean"]
+        osm_cdm = [
+            "osm2pgrouting", "--file", filepath, "--dbname", dbase, "--conf",
+            mapconfig, "--user", dbuser, "--password", dbpassw, "--port", dbport,
+            "--host", dbhost, "--schema", dbschema, "--clean", "--addnodes", 
+            "--tags", "--attributes"
+        ]
 
         out, err = self.__cmdCall(osm_cdm)
         if err:
