@@ -4,9 +4,9 @@ MAINTAINER Cayetano Benavent "cayetano.benavent@geographica.gs"
 
 
 # Environment
-ENV PGROUTING_VERSION 2.5.0
+ENV PGROUTING_VERSION 2.5.1
 ENV CGAL_VERSION 4.9
-ENV OSM2PGR_VERSION 2.3.1
+ENV OSM2PGR_VERSION 2.3.2
 
 # Sources
 ADD https://github.com/pgRouting/pgrouting/archive/v${PGROUTING_VERSION}.tar.gz $ROOTDIR/src/
