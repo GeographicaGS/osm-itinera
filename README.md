@@ -1,10 +1,5 @@
 # OSM Itinera
 
-### Create data container for PgSQL
-```
-$ docker create --name osm_itinera_data -v /data debian /bin/true
-```
-
 ### Prepare your config file.
 
 Copy the config file and fill it with your settings.
@@ -15,9 +10,9 @@ Now, you can edit this file using your favourite text editor.
 
 
 ### Build PgSQL container
-Compile CGAL, PgRouting and Osm2pgrouting, and prepare Python packages over geographica/postgis:breezy_badger Docker image (PgSQL 9.6 / PostGIS 2.3):
+Compile CGAL, PgRouting and Osm2pgrouting, and prepare Python packages over geographica/postgis:nimble_newt Docker image (PgSQL 10 / PostGIS 2.4):
 ```
-$ docker-compose build
+$ docker-compose build --no-cache
 ```
 
 ### Get data from OSM and import to PgSQL

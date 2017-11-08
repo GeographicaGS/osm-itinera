@@ -1,11 +1,16 @@
-postgis:
-  build: docker/
-  dockerfile: Dockerfile
-  volumes_from:
-    - osm_itinera_data
-  volumes:
-    - ./:/usr/src/app
-  ports:
-    - "5438:5432"
-  env_file:
-    - ./config.env
+version: "3"
+services:
+  postgis:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    ports:
+      - "5438:5432"
+    volumes:
+      - db-data:/data
+      - ./:/usr/src/app
+    env_file:
+      - ./config.env
+
+volumes:
+  db-data:

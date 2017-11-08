@@ -153,7 +153,7 @@ class OsmItinera:
         osm_cdm = [
             "osm2pgrouting", "--file", filepath, "--dbname", dbase, "--conf",
             mapconfig, "--user", dbuser, "--password", dbpassw, "--port", dbport,
-            "--host", dbhost, "--schema", dbschema, "--clean", "--addnodes", 
+            "--host", dbhost, "--schema", dbschema, "--clean", "--addnodes",
             "--tags", "--attributes"
         ]
 
@@ -190,7 +190,7 @@ class OsmItinera:
         except Exception as err:
             self.__logger.error("Error removing OSM downloaded file: {0}".format(err))
 
-    def run(self, dbschema="osm", dbdrop=False, mapconfig=const.MAPCFG_DICT.get("default", None)):
+    def run(self, dbschema="osm", dropdb=False, mapconfig=const.MAPCFG_DICT.get("default", None)):
 
         try:
             if isinstance(self.__bbox_coords, tuple) and len(self.__bbox_coords) == 4:
@@ -204,7 +204,7 @@ class OsmItinera:
                 self.__logger.info("OSM file sucessfully created!")
 
                 self.__logger.info("Creating and preparing database...")
-                self.createPgDb(dbschema, dbdrop)
+                self.createPgDb(dbschema, dropdb)
 
                 self.__logger.info("Importing OSM data to PgSQL...")
                 self.osmData2Pg(mapconfig, dbschema)
