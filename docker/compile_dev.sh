@@ -1,7 +1,7 @@
 # Compilation of CGAL, PGRouting and OSM2pgrouting
 
-# Install osm2pgrouting prerequisites
-apt-get update -y \
+# Update and apt-get basic packages
+apt-get update \
     && apt-get install -y \
 	       cmake \
 	       libboost-dev \
@@ -10,23 +10,17 @@ apt-get update -y \
 	       libmpfr-dev \
          expat \
          libexpat1-dev \
-         libboost-program-options-dev \
-         libpqxx-dev
-
-# Install Python3 dependencies
-apt-get update -y && apt-get install -y python3-pip
-python3 -m pip install requests
-python3 -m pip install psycopg2
+         libboost-program-options-dev
 
 
 # Untar
-cd $ROOTDIR/src ; tar -xvf CGAL-${CGAL_VERSION}.tar.gz ; cd ..
-cd $ROOTDIR/src ; tar -xvf v${PGROUTING_VERSION}.tar.gz ; cd ..
-cd $ROOTDIR/src ; tar -xvf v${OSM2PGR_VERSION}.tar.gz ; cd ..
+cd src ; tar -xvf CGAL-${CGAL_VERSION}.tar.gz ; cd ..
+cd src ; tar -xvf v${PGROUTING_VERSION}.tar.gz ; cd ..
+cd src ; tar -xvf ${OSM2PGR_VERSION}.tar.gz ; cd ..
 
 
 # Compilation of CGAL
-cd $ROOTDIR/src/cgal-releases-CGAL-${CGAL_VERSION}
+cd src/cgal-releases-CGAL-${CGAL_VERSION}
 mkdir build
 cd build
 cmake ..
@@ -37,7 +31,7 @@ cd ../../..
 
 
 # Compilation of PGRouting
-cd $ROOTDIR/src/pgrouting-${PGROUTING_VERSION}
+cd src/pgrouting-${PGROUTING_VERSION}
 mkdir build
 cd build
 cmake ..
@@ -48,7 +42,7 @@ cd ../../..
 
 
 # Compilation of osm2pgrouting
-cd $ROOTDIR/src/osm2pgrouting-${OSM2PGR_VERSION}
+cd src/osm2pgrouting-${OSM2PGR_VERSION}
 mkdir build
 cd build
 cmake .. -DBOOST_ROOT:PATH=/local/projects/rel-boost-1.58.0
