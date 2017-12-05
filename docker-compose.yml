@@ -5,7 +5,7 @@ services:
       context: ./docker
       dockerfile: Dockerfile
     ports:
-      - "5438:5432"
+      - "5437:5432"
     volumes:
       - db-data:/data
       - ./:/usr/src/app
