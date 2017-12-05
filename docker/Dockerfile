@@ -4,7 +4,7 @@ MAINTAINER Cayetano Benavent "cayetano.benavent@geographica.gs"
 
 
 # Environment
-ENV PGROUTING_VERSION 2.5.1
+ENV PGROUTING_VERSION 2.5.2
 ENV CGAL_VERSION 4.9
 ENV OSM2PGR_VERSION 2.3.1
 
