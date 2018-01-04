@@ -11,7 +11,8 @@ apt-get update -y \
          expat \
          libexpat1-dev \
          libboost-program-options-dev \
-         libpqxx-dev
+         libpqxx-dev \
+         libosmium2-dev
 
 # Install Python3 dependencies
 apt-get update -y && apt-get install -y python3-pip
@@ -57,6 +58,15 @@ make install
 ldconfig
 cd ../../..
 
+# Compilation of osm2pgrouting osmium restrictions tool
+cd $ROOTDIR/src/osm2pgrouting-${OSM2PGR_VERSION}/tools/osmium
+mkdir build
+cd build
+cmake ..
+make
+make install
+ldconfig
+cd ../../../../..
 
 # Clean up
 rm -Rf /usr/local/src
