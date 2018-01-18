@@ -1,4 +1,4 @@
-FROM geographica/postgis:nimble_newt
+FROM geographica/postgis:pleasant_yacare
 
 MAINTAINER Cayetano Benavent "cayetano.benavent@geographica.gs"
 
