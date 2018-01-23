@@ -69,4 +69,4 @@ ldconfig
 cd ../../../../..
 
 # Clean up
-rm -Rf /usr/local/src
+rm -Rf $ROOTDIR/src/*
