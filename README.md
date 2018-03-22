@@ -10,7 +10,7 @@ Now, you can edit this file using your favourite text editor.
 
 
 ### Build PgSQL container
-Compile CGAL, PgRouting and Osm2pgrouting, and prepare Python packages over geographica/postgis:nimble_newt Docker image (PgSQL 10 / PostGIS 2.4):
+Compile CGAL, PgRouting and Osm2pgrouting, and prepare Python packages over geographica/postgis:pleasant_yacare Docker image (PgSQL 10 / PostGIS 2.4):
 ```
 $ docker-compose build --no-cache
 ```
